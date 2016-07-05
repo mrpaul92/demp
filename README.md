@@ -1,2 +1,2 @@
-# demp
-Debian + Nginx + MySQL + PHP
+# Debian + Nginx (EngineX) + MySQL + PHP
+Just another LEMP script for Debian.
