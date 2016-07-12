@@ -2,7 +2,7 @@
 
 ############################################################################
 # Debian + Nginx + MySQL + PHP                                             #
-# Version: 0.4                                                             #
+# Version: 0.4 Build 2                                                     #
 # Branch: Dev                                                              #
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 # Author: Hidden Refuge (© 2016)                                           #
@@ -38,7 +38,7 @@ instnginxml () {
 confnginx () {
   /etc/init.d/nginx stop # stopping nginx in case it is running
   mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.original # moving original nginx.conf to nginx.conf.original as a backup
-  wget -O /etc/nginx/nginx.conf https://raw.githubusercontent.com/hidden-refuge/demp/master/nginx.conf # installing new nginx.conf configuration file
+  wget -O /etc/nginx/nginx.conf https://raw.githubusercontent.com/hidden-refuge/demp/master/nginx.conf --no-check-certificate # installing new nginx.conf configuration file
   /etc/init.d/nginx start # starting nginx with the new configuration
 }
 
