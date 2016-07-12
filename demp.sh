@@ -2,7 +2,7 @@
 
 ############################################################################
 # Debian + Nginx + MySQL + PHP                                             #
-# Version: 0.6 Build 1                                                     #
+# Version: 0.6 Build 2                                                     #
 # Branch: Dev                                                              #
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 # Author: Hidden Refuge (© 2016)                                           #
@@ -102,9 +102,9 @@ miscinf () {
 
 case $1 in 
   '-stable') # if $1 is -stable run the installation routine below
-    instnginx; confnginx; instmysql; instphp5, instdefvhost; miscinf;; # installation routine for stable nginx version
+    instnginx; confnginx; instmysql; instphp5; instdefvhost; miscinf;; # installation routine for stable nginx version
   '-mainline') # if $1 is -mainline run the installation routine below
-    instnginxml; confnginx; instmysql; instphp5, instdefvhost; miscinf;; # installtion routine for mainline nginx version
+    instnginxml; confnginx; instmysql; instphp5; instdefvhost; miscinf;; # installtion routine for mainline nginx version
   * )
     echo ""
     echo "DEMP - Debian + Nginx + MySQL + PHP - 0.6 Dev"
