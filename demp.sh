@@ -37,53 +37,22 @@ instnginxml () {
 # Function to configure Nginx
 confnginx () {
   /etc/init.d/nginx stop # stopping nginx in case it is running
-  mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.original # moving original nginx.config to nginx.conf.original as a backup
-  touch /etc/nginx/nginx.conf # creating a new empty nginx.conf
-  # installing new nginx.conf configuration
-  cat > /etc/nginx/nginx.conf <<END
-  user www-data;
-  worker_processes 1;
-  pid /var/run/nginx.pid;
-
-  events {
-    worker_connections 2048;
-    multi_accept on;
-  }
-
-  http {
-    sendfile on;
-    tcp_nopush on;
-    tcp_nodelay on;
-        
-    keepalive_timeout 5 5;
-    reset_timedout_connection on;  
-    client_body_timeout   10; 
-    client_header_timeout 10; 
-    send_timeout          10;
-        
-    server_tokens off;
-    include /etc/nginx/mime.types;
-    default_type application/octet-stream;
-        
-    client_body_buffer_size 1k;
-    client_header_buffer_size 1k;
-    client_max_body_size 16M;
-    large_client_header_buffers 2 1k;
-        
-    gzip on;
-    gzip_disable "msie6";
-    gzip_vary on;
-    gzip_proxied any;
-    gzip_comp_level 6;
-    gzip_buffers 16 8k;
-    gzip_http_version 1.1;
-    gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
-      
-    error_log /var/log/nginx/error.log crit;
-    access_log /var/log/nginx/access.log;
-        
-    include /etc/nginx/conf.d/*.conf;
-  }
-  END
+  mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.original # moving original nginx.conf to nginx.conf.original as a backup
+  wget -O /etc/nginx/nginx.conf https://raw.githubusercontent.com/hidden-refuge/demp/master/nginx.conf # installing new nginx.conf configuration file
   /etc/init.d/nginx start # starting nginx with the new configuration
 }
+
+case $1 in 
+  '-stable') # if $1 is -stable run the installation routine below
+    instnginx; confnginx;; # installation routine for stable nginx version
+  '-mainline') # if $1 is -mainline run the installation routine below
+    instnginxml, confnginx;; # installtion routine for mainline nginx version
+  * )
+    echo ""
+    echo "DEMP - Debian + Nginx + MySQL + PHP - 0.4 Dev"
+    echo ""
+    echo "Options:"
+    echo "-stable     - Latest stable Nginx version (1.10.*)"
+    echo "-mainline   - Latest mainline Nginx version (1.11.*)"
+    echo "";;
+esac
