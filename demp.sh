@@ -2,7 +2,7 @@
 
 ############################################################################
 # Debian + Nginx + MySQL + PHP                                             #
-# Version: 0.6 Build 2                                                     #
+# Version: 0.6 Build 3                                                     #
 # Branch: Dev                                                              #
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 # Author: Hidden Refuge (© 2016)                                           #
@@ -78,13 +78,13 @@ miscinf () {
   clear
   echo "Thank you for using my Debian + Nginx + MySQL + PHP (DEMP) web stack installer script!"
   echo ""
-  if [ $1 != '-stable' ] 
+  if [ $1 = '-stable' ] 
     then
-      vnginx=1.11
-      nnginx=mainline
-    else
       vnginx=1.10
       nnginx=stable
+    else
+      vnginx=1.11
+      nnginx=mainline
   fi
   echo "You've successfully installed nginx $vnginx ($nnginx) with MySQL 5.5.49 and PHP 5.6.22 + modules through PHP5-FPM."
   echo "The following additional PHP modules have been installed:"
@@ -98,6 +98,8 @@ miscinf () {
   echo "http://yourserverip/phpinfo.php or http://yourdomain.ext/phpinfo.php"
   echo "The latter only works if you only have the default vHost and no other vHost with your domain as server_name."
   echo ""
+  echo ""
+  echo "Enjoy yourself and your new web server setup! Regards, Hidden Refuge (https://hiddenrefuge.eu.org/)"
 }
 
 case $1 in 
