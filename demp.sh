@@ -2,7 +2,7 @@
 
 ############################################################################
 # Debian + Nginx + MySQL + PHP                                             #
-# Version: 0.4 Build 2                                                     #
+# Version: 0.5 Build 1                                                     #
 # Branch: Dev                                                              #
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 # Author: Hidden Refuge (© 2016)                                           #
@@ -40,19 +40,41 @@ confnginx () {
   mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.original # moving original nginx.conf to nginx.conf.original as a backup
   wget -O /etc/nginx/nginx.conf https://raw.githubusercontent.com/hidden-refuge/demp/master/nginx.conf --no-check-certificate # installing new nginx.conf configuration file
   /etc/init.d/nginx start # starting nginx with the new configuration
+  update-rc.d nginx defaults # setting up the nginx daemon to start as a service
+}
+
+# Function to install MySQL
+instmysql () {
+  apt-get install mysql-server -y # installing MySQL (you will be asked to set a root password for the MySQL root user)
+  /etc/init.d/mysql stop # stopping MySQl in case it is running
+  mv /etc/mysql/my.cnf /etc/mysql/my.cnf.original # moving original my.cnf to my.cnf.original as a backup
+  wget -O /etc/mysql/my.cnf https://raw.githubusercontent.com/hidden-refuge/demp/master/my.cnf --no-check-certificate # installing new low resource usage my.cnf configuration file
+  /etc/init.d/mysql start # starting MySQL with the new configuration
+  update-rc.d mysql defaults # setting up the MySQL daemon to start as a service
+}
+
+# Function to install PHP5-FPM with modules
+instphp5 () {
+  apt-get install php5-fpm php5-mysql php5-gd php5-mcrypt php5-curl curl php5-apcu -y # installing PHP5-FPM, PHP5-MYSQL to support MYSQL databases, PHP5-MCRYPT crypto module, curl & PHP5-CURL and PHP5-APCU for caching
+  /etc/init.d/php5-fpm stop # stopping PHP5-FPM in case it is running
+  echo "cgi.fix_pathinfo=0" >> /etc/php5/fpm/php.ini # fixing a possible security risk
+  rm -rf /etc/php5/fpm/pool.d/www.conf # removing old www.conf pool configuration file
+  wget -O /etc/php5/fpm/pool.d/www.conf https://raw.githubusercontent.com/hidden-refuge/demp/master/www.conf --no-check-certificate # installing new www.conf pool configuration file
+  /etc/init.d/php5-fpm start # starting PHP5-FPM with the new configuration
+  update-rc.d php5-fpm defaults # setting up the PHP5-FPM daemon to start as a service
 }
 
 case $1 in 
   '-stable') # if $1 is -stable run the installation routine below
-    instnginx; confnginx;; # installation routine for stable nginx version
+    instnginx; confnginx; instmysql; instphp5;; # installation routine for stable nginx version
   '-mainline') # if $1 is -mainline run the installation routine below
-    instnginxml, confnginx;; # installtion routine for mainline nginx version
+    instnginxml; confnginx; instmysql; instphp5;; # installtion routine for mainline nginx version
   * )
     echo ""
-    echo "DEMP - Debian + Nginx + MySQL + PHP - 0.4 Dev"
+    echo "DEMP - Debian + Nginx + MySQL + PHP - 0.5 Dev"
     echo ""
     echo "Options:"
-    echo "-stable     - Latest stable Nginx version (1.10.*)"
-    echo "-mainline   - Latest mainline Nginx version (1.11.*)"
+    echo "-stable     - Stable Nginx (1.10.*) + MySQL 5.5.49 + PHP 5.6.14"
+    echo "-mainline   - Mainline Nginx version (1.11.*) + MySQL 5.5.49 + PHP 5.6.14"
     echo "";;
 esac
