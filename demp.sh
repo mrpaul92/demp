@@ -64,11 +64,20 @@ instphp5 () {
   update-rc.d php5-fpm defaults # setting up the PHP5-FPM daemon to start as a service
 }
 
+# Function to install a default Nginx vHost with PHP supported
+instdefvhost () {
+  rm -rf /etc/nginx/conf.d/default.conf # removing the old default vHost file
+  wget -O /etc/nginx/conf.d/default.conf https://raw.githubusercontent.com/hidden-refuge/demp/master/default-vhost.conf --no-check-certificate # installing new default vhost configuration
+  touch /usr/share/nginx/html/phpinfo.php # creating a empty phpinfo php file
+  echo "<?php phpinfo(); ?>" > /usr/share/nginx/html/phpinfo.php # pushing phpinfo content to file
+  /etc/init.d/nginx restart # restarting to apply the new default vHost
+}
+
 case $1 in 
   '-stable') # if $1 is -stable run the installation routine below
-    instnginx; confnginx; instmysql; instphp5;; # installation routine for stable nginx version
+    instnginx; confnginx; instmysql; instphp5, instdefvhost;; # installation routine for stable nginx version
   '-mainline') # if $1 is -mainline run the installation routine below
-    instnginxml; confnginx; instmysql; instphp5;; # installtion routine for mainline nginx version
+    instnginxml; confnginx; instmysql; instphp5, instdefvhost;; # installtion routine for mainline nginx version
   * )
     echo ""
     echo "DEMP - Debian + Nginx + MySQL + PHP - 0.5 Dev"
