@@ -2,7 +2,7 @@
 
 ############################################################################
 # Debian + Nginx + MySQL + PHP                                             #
-# Version: 0.6 Build 4                                                     #
+# Version: 0.6 Build 5                                                     #
 # Branch: Dev                                                              #
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 # Author: Hidden Refuge (© 2016)                                           #
@@ -78,13 +78,7 @@ miscinf () {
   clear
   echo "Thank you for using my Debian + Nginx + MySQL + PHP (DEMP) web stack installer script!"
   echo ""
-  if [ $1 == "-stable" ] 
-    then
-      vnginx=1.10-stable
-    else
-      vnginx=1.11-mainline
-  fi
-  echo "You've successfully installed nginx $vnginx with MySQL 5.5.49 and PHP 5.6.22 + modules through PHP5-FPM."
+  echo "You've successfully installed nginx$1 with MySQL 5.5.49 and PHP 5.6.22 + modules through PHP5-FPM."
   echo "The following additional PHP modules have been installed:"
   echo "-php5-gd (This package provides a module for handling graphics directly from PHP scripts.)"
   echo "-php5-mysql (This package provides modules for MySQL database connections directly from PHP scripts.)"
