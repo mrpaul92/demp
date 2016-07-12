@@ -2,7 +2,7 @@
 
 ############################################################################
 # Debian + Nginx + MySQL + PHP                                             #
-# Version: 0.5 Build 1                                                     #
+# Version: 0.6 Build 1                                                     #
 # Branch: Dev                                                              #
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 # Author: Hidden Refuge (© 2016)                                           #
@@ -73,17 +73,46 @@ instdefvhost () {
   /etc/init.d/nginx restart # restarting to apply the new default vHost
 }
 
+# Function with misc information
+miscinf () {
+  clear
+  echo "Thank you for using my Debian + Nginx + MySQL + PHP (DEMP) web stack installer script!"
+  echo ""
+  if [ $1 != '-stable' ] 
+    then
+      vnginx=1.11
+      nnginx=mainline
+    else
+      vnginx=1.10
+      nnginx=stable
+  fi
+  echo "You've successfully installed nginx $vnginx ($nnginx) with MySQL 5.5.49 and PHP 5.6.22 + modules through PHP5-FPM."
+  echo "The following additional PHP modules have been installed:"
+  echo "-php5-gd (This package provides a module for handling graphics directly from PHP scripts.)"
+  echo "-php5-mysql (This package provides modules for MySQL database connections directly from PHP scripts.)"
+  echo "-php5-mcrypt (This package provides a module for MCrypt functions in PHP scripts.)" 
+  echo "-php5-curl (CURL is a library for getting files from FTP, GOPHER, HTTP server.)"
+  echo "-php5-apcu (The APCu is userland caching: APC stripped of opcode caching after the deployment of Zend OpCache.)"
+  echo ""
+  echo "For your convenience the script created a phpinfo() page. It is available at the address(es) below:"
+  echo "http://yourserverip/phpinfo.php or http://yourdomain.ext/phpinfo.php"
+  echo "The latter only works if you only have the default vHost and no other vHost with your domain as server_name."
+  echo ""
+}
+
 case $1 in 
   '-stable') # if $1 is -stable run the installation routine below
-    instnginx; confnginx; instmysql; instphp5, instdefvhost;; # installation routine for stable nginx version
+    instnginx; confnginx; instmysql; instphp5, instdefvhost; miscinf;; # installation routine for stable nginx version
   '-mainline') # if $1 is -mainline run the installation routine below
-    instnginxml; confnginx; instmysql; instphp5, instdefvhost;; # installtion routine for mainline nginx version
+    instnginxml; confnginx; instmysql; instphp5, instdefvhost; miscinf;; # installtion routine for mainline nginx version
   * )
     echo ""
-    echo "DEMP - Debian + Nginx + MySQL + PHP - 0.5 Dev"
+    echo "DEMP - Debian + Nginx + MySQL + PHP - 0.6 Dev"
     echo ""
     echo "Options:"
     echo "-stable     - Stable Nginx (1.10.*) + MySQL 5.5.49 + PHP 5.6.14"
     echo "-mainline   - Mainline Nginx version (1.11.*) + MySQL 5.5.49 + PHP 5.6.14"
+    echo ""
+    echo "Copyright 2016 - Hidden Refuge (licensed under MIT)"
     echo "";;
 esac
