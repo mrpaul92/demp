@@ -2,7 +2,7 @@
 
 ############################################################################
 # Debian + Nginx + MySQL + PHP                                             #
-# Version: 0.7 Build 1                                                     #
+# Version: 0.7 Build 2                                                     #
 # Branch: Dev                                                              #
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 # Author: Hidden Refuge (© 2016)                                           #
@@ -69,8 +69,15 @@ instphp70 () {
   wget -O /tmp/dotdeb.gpg https://www.dotdeb.org/dotdeb.gpg --no-check-certificate # downloading DotDeb GPG key
   apt-key add /tmp/dotdeb.gpg # installing DotDeb GPG key
   rm -rf /tmp/dotdeb.gpg # removing DotDeb GPG key file
-  echo "deb http://packages.dotdeb.org jessie all" >> /etc/apt/sources.list # adding official DotDeb PHP 7 repository
+  echo "deb http://packages.dotdeb.org jessie all" >> /etc/apt/sources.list # adding official DotDeb PHP 7.0 repository
   apt-get update # updating apt-get package database
+  apt-get install php7.0-fpm php7.0-mysql php7.0-gd php7.0-mcrypt php7.0-mbstring php7.0-curl curl php7.0-bz2 php7.0-xml php7.0-zip php7.0-apcu # installing PHP7.0-FPM, PHP7.0-MYSQL to support MYSQL databases, PHP7.0-MCRYPT crypto module, PHP7.0-MBSTRING for multi-byte string operations, curl & PHP7.0-CURL , PHP7.0-XML for xml processing, PHP7.0-BZ2/ZIP for archive processing and PHP7.0-APCU for caching
+  /etc/init.d/php7.0-fpm stop # stopping PHP7.0-FPM in case it is 
+  echo "cgi.fix_pathinfo=0" >> /etc/php/7.0/fpm/php.ini # fixing a possible security risk
+  rm -rf /etc/php/7.0/fpm/pool.d/www.conf # removing old www.conf pool configuration file
+  wget -O /etc/php/7.0/fpm/pool.d/www.conf https://raw.githubusercontent.com/hidden-refuge/demp/master/www.conf --no-check-certificate # installing new www.conf pool configuration file
+  /etc/init.d/php7.0-fpm start # starting PHP7.0-FPM with the new configuration
+  update-rc.d php7.0-fpm defaults  # setting up the PHP7.0-FPM daemon to start as a service
 }
 
 # Function to install a default Nginx vHost with PHP supported
@@ -82,41 +89,20 @@ instdefvhost () {
   /etc/init.d/nginx restart # restarting to apply the new default vHost
 }
 
-# Function with misc information
-miscinf () {
-  clear
-  echo "Thank you for using my Debian + Nginx + MySQL + PHP (DEMP) web stack installer script!"
-  echo ""
-  echo "You've successfully installed nginx$1 with MySQL 5.5.49 and PHP 5.6.22 + modules through PHP5-FPM."
-  echo "The following additional PHP modules have been installed:"
-  echo "-php5-gd (This package provides a module for handling graphics directly from PHP scripts.)"
-  echo "-php5-mysql (This package provides modules for MySQL database connections directly from PHP scripts.)"
-  echo "-php5-mcrypt (This package provides a module for MCrypt functions in PHP scripts.)" 
-  echo "-php5-curl (CURL is a library for getting files from FTP, GOPHER, HTTP server.)"
-  echo "-php5-apcu (The APCu is userland caching: APC stripped of opcode caching after the deployment of Zend OpCache.)"
-  echo ""
-  echo "For your convenience the script created a phpinfo() page. It is available at the address(es) below:"
-  echo "http://yourserverip/phpinfo.php or http://yourdomain.ext/phpinfo.php"
-  echo "The latter only works if you only have the default vHost and no other vHost with your domain as server_name."
-  echo ""
-  echo ""
-  echo "Enjoy yourself and your new web server setup! Regards, Hidden Refuge (https://hiddenrefuge.eu.org/)"
-}
-
 case $1 in 
   '-stable') # if $1 is -stable run the installation routine below
     case $2 in # if $2 is -php7 run installation routine beblow + PHP 7.0 otherwise with PHP 5.6 
       '-php7')
-        instnginx; confnginx; instmysql; instphp70; instdefvhost; miscinf;; # installation routine for stable nginx version with PHP 7.0
+        instnginx; confnginx; instmysql; instphp70; instdefvhost;; # installation routine for stable nginx version with PHP 7.0
       *)
-        instnginx; confnginx; instmysql; instphp56; instdefvhost; miscinf;; # installation routine for stable nginx version with PHP 5.6
+        instnginx; confnginx; instmysql; instphp56; instdefvhost;; # installation routine for stable nginx version with PHP 5.6
     esac;;
   '-mainline') # if $1 is -mainline run the installation routine below
     case $2 in # if $2 is -php7 run installation routine beblow + PHP 7.0 otherwise with PHP 5.6 
       '-php7')
-        instnginxml; confnginx; instmysql; instphp70; instdefvhost; miscinf;; # installtion routine for mainline nginx version with PHP 7.0
+        instnginxml; confnginx; instmysql; instphp70; instdefvhost;; # installtion routine for mainline nginx version with PHP 7.0
       *)
-        instnginxml; confnginx; instmysql; instphp56; instdefvhost; miscinf;; # installtion routine for mainline nginx version with PHP 5.6
+        instnginxml; confnginx; instmysql; instphp56; instdefvhost;; # installtion routine for mainline nginx version with PHP 5.6
     esac;;
   * )
     echo ""
