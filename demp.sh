@@ -2,7 +2,7 @@
 
 ############################################################################
 # Debian + Nginx + MySQL + PHP                                             #
-# Version: 0.7 Build 2                                                     #
+# Version: 0.7 Build 3                                                     #
 # Branch: Dev                                                              #
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 # Author: Hidden Refuge (© 2016)                                           #
@@ -71,7 +71,7 @@ instphp70 () {
   rm -rf /tmp/dotdeb.gpg # removing DotDeb GPG key file
   echo "deb http://packages.dotdeb.org jessie all" >> /etc/apt/sources.list # adding official DotDeb PHP 7.0 repository
   apt-get update # updating apt-get package database
-  apt-get install php7.0-fpm php7.0-mysql php7.0-gd php7.0-mcrypt php7.0-mbstring php7.0-curl curl php7.0-bz2 php7.0-xml php7.0-zip php7.0-apcu # installing PHP7.0-FPM, PHP7.0-MYSQL to support MYSQL databases, PHP7.0-MCRYPT crypto module, PHP7.0-MBSTRING for multi-byte string operations, curl & PHP7.0-CURL , PHP7.0-XML for xml processing, PHP7.0-BZ2/ZIP for archive processing and PHP7.0-APCU for caching
+  apt-get install php7.0-fpm php7.0-mysql php7.0-gd php7.0-mcrypt php7.0-mbstring php7.0-curl curl php7.0-bz2 php7.0-xml php7.0-zip php7.0-apcu -y # installing PHP7.0-FPM, PHP7.0-MYSQL to support MYSQL databases, PHP7.0-MCRYPT crypto module, PHP7.0-MBSTRING for multi-byte string operations, curl & PHP7.0-CURL , PHP7.0-XML for xml processing, PHP7.0-BZ2/ZIP for archive processing and PHP7.0-APCU for caching
   /etc/init.d/php7.0-fpm stop # stopping PHP7.0-FPM in case it is 
   echo "cgi.fix_pathinfo=0" >> /etc/php/7.0/fpm/php.ini # fixing a possible security risk
   rm -rf /etc/php/7.0/fpm/pool.d/www.conf # removing old www.conf pool configuration file
