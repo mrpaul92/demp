@@ -2,7 +2,7 @@
 
 ############################################################################
 # Debian + Nginx + MySQL + PHP                                             #
-# Version: 0.6 Build 5                                                     #
+# Version: 0.7 Build 1                                                     #
 # Branch: Dev                                                              #
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 # Author: Hidden Refuge (© 2016)                                           #
@@ -27,7 +27,7 @@ instnginxml () {
   wget -O /tmp/nginx_signing.key http://nginx.org/keys/nginx_signing.key # downloading nginx GPG key
   apt-key add /tmp/nginx_signing.key # installing nginx GPG key
   rm -rf /tmp/nginx_signing.key # removing downloaded GPG key file
-  echo "deb http://nginx.org/packages/mainline/debian/ jessie nginx" >> /etc/apt/sources.list # adding official nginx mainline  version repository
+  echo "deb http://nginx.org/packages/mainline/debian/ jessie nginx" >> /etc/apt/sources.list # adding official nginx mainline version repository
   # uncomment the line below if you need the source code for the latest stable nginx version
   #echo "deb-src http://nginx.org/packages/mainline/debian/ jessie nginx" >> /etc/apt/sources.list # adding source for official nginx mainline version
   apt-get update # updating apt-get package database and sources
@@ -54,7 +54,7 @@ instmysql () {
 }
 
 # Function to install PHP5-FPM with modules
-instphp5 () {
+instphp56 () {
   apt-get install php5-fpm php5-mysql php5-gd php5-mcrypt php5-curl curl php5-apcu -y # installing PHP5-FPM, PHP5-MYSQL to support MYSQL databases, PHP5-MCRYPT crypto module, curl & PHP5-CURL and PHP5-APCU for caching
   /etc/init.d/php5-fpm stop # stopping PHP5-FPM in case it is running
   echo "cgi.fix_pathinfo=0" >> /etc/php5/fpm/php.ini # fixing a possible security risk
@@ -62,6 +62,15 @@ instphp5 () {
   wget -O /etc/php5/fpm/pool.d/www.conf https://raw.githubusercontent.com/hidden-refuge/demp/master/www.conf --no-check-certificate # installing new www.conf pool configuration file
   /etc/init.d/php5-fpm start # starting PHP5-FPM with the new configuration
   update-rc.d php5-fpm defaults # setting up the PHP5-FPM daemon to start as a service
+}
+
+# Function to install PHP7-FPM with modules
+instphp70 () {
+  wget -O /tmp/dotdeb.gpg https://www.dotdeb.org/dotdeb.gpg --no-check-certificate # downloading DotDeb GPG key
+  apt-key add /tmp/dotdeb.gpg # installing DotDeb GPG key
+  rm -rf /tmp/dotdeb.gpg # removing DotDeb GPG key file
+  echo "deb http://packages.dotdeb.org jessie all" >> /etc/apt/sources.list # adding official DotDeb PHP 7 repository
+  apt-get update # updating apt-get package database
 }
 
 # Function to install a default Nginx vHost with PHP supported
@@ -96,16 +105,28 @@ miscinf () {
 
 case $1 in 
   '-stable') # if $1 is -stable run the installation routine below
-    instnginx; confnginx; instmysql; instphp5; instdefvhost; miscinf;; # installation routine for stable nginx version
+    case $2 in # if $2 is -php7 run installation routine beblow + PHP 7.0 otherwise with PHP 5.6 
+      '-php7')
+        instnginx; confnginx; instmysql; instphp70; instdefvhost; miscinf;; # installation routine for stable nginx version with PHP 7.0
+      *)
+        instnginx; confnginx; instmysql; instphp56; instdefvhost; miscinf;; # installation routine for stable nginx version with PHP 5.6
+    esac;;
   '-mainline') # if $1 is -mainline run the installation routine below
-    instnginxml; confnginx; instmysql; instphp5; instdefvhost; miscinf;; # installtion routine for mainline nginx version
+    case $2 in # if $2 is -php7 run installation routine beblow + PHP 7.0 otherwise with PHP 5.6 
+      '-php7')
+        instnginxml; confnginx; instmysql; instphp70; instdefvhost; miscinf;; # installtion routine for mainline nginx version with PHP 7.0
+      *)
+        instnginxml; confnginx; instmysql; instphp56; instdefvhost; miscinf;; # installtion routine for mainline nginx version with PHP 5.6
+    esac;;
   * )
     echo ""
-    echo "DEMP - Debian + Nginx + MySQL + PHP - 0.6 Dev"
+    echo "DEMP - Debian + Nginx + MySQL + PHP - 0.7 Dev"
     echo ""
     echo "Options:"
-    echo "-stable     - Stable Nginx (1.10.*) + MySQL 5.5.49 + PHP 5.6.14"
-    echo "-mainline   - Mainline Nginx version (1.11.*) + MySQL 5.5.49 + PHP 5.6.14"
+    echo "-stable         - Stable Nginx (1.10.*) + MySQL 5.5.49 + PHP 5.6.14"
+    echo "-mainline       - Mainline Nginx (1.11.*) + MySQL 5.5.49 + PHP 5.6.14"
+    echo "-stable -php7   - Stable Nginx (1.10.*) + MySQL 5.5.49 + PHP 7.0.8"
+    echo "-mainline -php7 - Mainline Nginx (1.11.*) + MySQL 5.5.49 + PHP 7.0.8"
     echo ""
     echo "Copyright 2016 - Hidden Refuge (licensed under MIT)"
     echo "";;
