@@ -5,7 +5,7 @@
 # Version: 0.7 Build 6                                                     #
 # Branch: Dev                                                              #
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-# Author: Hidden Refuge (© 2016)                                           #
+# Author: Hidden Refuge (© 2016 - 2017)                                    #
 # License: MIT License                                                     #
 ############################################################################
 
@@ -114,6 +114,6 @@ case $1 in
     echo "-stable -php7   - Stable Nginx (1.10.1) + MySQL 5.5.49 + PHP 7.0.8"
     echo "-mainline -php7 - Mainline Nginx (1.11.2) + MySQL 5.5.49 + PHP 7.0.8"
     echo ""
-    echo "Copyright 2016 - Hidden Refuge (licensed under MIT)"
+    echo "Copyright 2016 - 2017 by Hidden Refuge (licensed under MIT)"
     echo "";;
 esac
